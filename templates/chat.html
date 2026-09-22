@@ -1,81 +1,457 @@
-<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-
 <!DOCTYPE html>
-<html>
-	<head>
-		<title>Chatbot</title>
-		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css')}}"/>
-	</head>
-	
-	
-	<body>
-		<div class="container-fluid h-100">
-			<div class="row justify-content-center h-100">		
-				<div class="col-md-8 col-xl-6 chat">
-					<div class="card">
-						<div class="card-header msg_head">
-							<div class="d-flex bd-highlight">
-								<div class="img_cont">
-									<img src="https://cdn-icons-png.flaticon.com/512/387/387569.png" class="rounded-circle user_img">
-									<!-- <img src="https://www.prdistribution.com/spirit/uploads/pressreleases/2019/newsreleases/d83341deb75c4c4f6b113f27b1e42cd8-chatbot-florence-already-helps-thousands-of-patients-to-remember-their-medication.png" class="rounded-circle user_img"> -->
-									<span class="online_icon"></span>
-								</div>
-								<div class="user_info">
-									<span>Medical Chatbot</span>
-									<p>Ask me anything!</p>
-								</div>
-							</div>
-						</div>
-						<div id="messageFormeight" class="card-body msg_card_body">
-							
-							
-						</div>
-						<div class="card-footer">
-							<form id="messageArea" class="input-group">
-                                <input type="text" id="text" name="msg" placeholder="Type your message..." autocomplete="off" class="form-control type_msg" required/>
-								<div class="input-group-append">
-									<button type="submit" id="send" class="input-group-text send_btn"><i class="fas fa-location-arrow"></i></button>
-								</div>
-							</form>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		
-		<script>
-			$(document).ready(function() {
-				$("#messageArea").on("submit", function(event) {
-					const date = new Date();
-					const hour = date.getHours();
-					const minute = date.getMinutes();
-					const str_time = hour+":"+minute;
-					var rawText = $("#text").val();
+<html lang="en">
 
-					var userHtml = '<div class="d-flex justify-content-end mb-4"><div class="msg_cotainer_send">' + rawText + '<span class="msg_time_send">'+ str_time + '</span></div><div class="img_cont_msg"><img src="https://i.ibb.co/d5b84Xw/Untitled-design.png" class="rounded-circle user_img_msg"></div></div>';
-					
-					$("#text").val("");
-					$("#messageFormeight").append(userHtml);
+<head>
+    <meta charset="UTF-8">
 
-					$.ajax({
-						data: {
-							msg: rawText,	
-						},
-						type: "POST",
-						url: "/get",
-					}).done(function(data) {
-						var botHtml = '<div class="d-flex justify-content-start mb-4"><div class="img_cont_msg"><img src="https://cdn-icons-png.flaticon.com/512/387/387569.png" class="rounded-circle user_img_msg"></div><div class="msg_cotainer">' + data + '<span class="msg_time">' + str_time + '</span></div></div>';
-						$("#messageFormeight").append($.parseHTML(botHtml));
-					});
-					event.preventDefault();
-				});
-			});
-		</script>
-        
-    </body>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Medical Chatbot</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <!-- ================= NAVBAR ================= -->
+
+    <header class="navbar">
+
+        <div class="logo-section">
+
+            <div class="logo-icon">
+                🩺
+            </div>
+
+            <div class="logo-text">
+                <h2>Medical Chatbot</h2>
+                <p>Your AI Health Assistant</p>
+            </div>
+
+        </div>
+
+
+        <nav class="nav-links">
+
+            <a href="#" class="active">
+                🏠 Home
+            </a>
+
+            <a href="#">
+                ℹ️ About
+            </a>
+
+            <a href="#">
+                🛡 Health Tips
+            </a>
+
+            <a href="#">
+                ✉ Contact
+            </a>
+
+        </nav>
+
+
+        <div class="online-status">
+
+            <span class="online-dot"></span>
+
+            <div>
+                <strong>Online</strong>
+                <small>Ready to help</small>
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- ================= MAIN ================= -->
+
+    <main class="main-container">
+
+        <!-- Top Badge -->
+
+        <div class="knowledge-badge">
+            💙 &nbsp; Powered by Medical Knowledge
+        </div>
+
+
+        <!-- Medical Icon -->
+
+        <div class="medical-icon">
+            🩺
+        </div>
+
+
+        <!-- Heading -->
+
+        <h1>
+            How can I
+            <span>help you today?</span>
+        </h1>
+
+
+        <p class="subtitle">
+            Ask me any question related to medical topics.
+            I'll try to give you clear and useful information
+            based on the provided medical content.
+        </p>
+
+
+        <!-- ================= QUICK QUESTIONS ================= -->
+
+        <div class="quick-questions">
+
+            <button onclick="askQuestion('What are the symptoms of dengue?')">
+                📄
+                <span>Symptoms of dengue</span>
+            </button>
+
+
+            <button onclick="askQuestion('What is diabetes?')">
+                🩸
+                <span>What is diabetes?</span>
+            </button>
+
+
+            <button onclick="askQuestion('What are the causes of fever?')">
+                🌡
+                <span>Causes of fever</span>
+            </button>
+
+
+            <button onclick="askQuestion('What is hypertension?')">
+                ❤️
+                <span>About hypertension</span>
+            </button>
+
+
+            <button onclick="askQuestion('What is common cold?')">
+                💊
+                <span>Common cold</span>
+            </button>
+
+
+            <button onclick="askQuestion('What are preventive care tips?')">
+                🛡
+                <span>Preventive care tips</span>
+            </button>
+
+        </div>
+
+
+        <!-- ================= CHAT AREA ================= -->
+
+        <div id="chat-box" class="chat-box">
+
+            <div class="welcome-message">
+
+                <div class="bot-avatar">
+                    🩺
+                </div>
+
+                <div class="message bot-message">
+
+                    <strong>Medical Assistant</strong>
+
+                    <p>
+                        Hello! 👋
+                        Ask me a medical question and I'll
+                        search the available medical knowledge
+                        to provide an answer.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================= INPUT ================= -->
+
+        <div class="input-area">
+
+            <button class="attach-btn" title="Attachment">
+                +
+            </button>
+
+
+            <input
+                type="text"
+                id="user-input"
+                placeholder="Ask a medical question..."
+                autocomplete="off"
+            >
+
+
+            <button
+                id="send-btn"
+                class="send-btn"
+                onclick="sendMessage()"
+            >
+                ➤
+            </button>
+
+        </div>
+
+
+        <!-- Loading -->
+
+        <div id="loading" class="loading">
+
+            <span></span>
+            <span></span>
+            <span></span>
+
+            <p>Medical Assistant is thinking...</p>
+
+        </div>
+
+
+        <!-- Disclaimer -->
+
+        <div class="disclaimer">
+
+            <span>ⓘ</span>
+
+            <p>
+                This chatbot provides information from a medical book.
+                It is not a substitute for professional medical advice,
+                diagnosis, or treatment. Always consult a qualified
+                healthcare professional.
+            </p>
+
+        </div>
+
+
+        <!-- Footer -->
+
+        <footer>
+
+            © 2026 Medical Chatbot. All rights reserved.
+
+        </footer>
+
+    </main>
+
+
+    <!-- ================= JAVASCRIPT ================= -->
+
+    <script>
+
+        const input = document.getElementById("user-input");
+        const chatBox = document.getElementById("chat-box");
+        const loading = document.getElementById("loading");
+
+
+        // ==========================================
+        // ENTER KEY
+        // ==========================================
+
+        input.addEventListener("keydown", function(event) {
+
+            if (event.key === "Enter") {
+
+                event.preventDefault();
+
+                sendMessage();
+
+            }
+
+        });
+
+
+        // ==========================================
+        // QUICK QUESTION
+        // ==========================================
+
+        function askQuestion(question) {
+
+            input.value = question;
+
+            sendMessage();
+
+        }
+
+
+        // ==========================================
+        // SEND MESSAGE
+        // ==========================================
+
+        async function sendMessage() {
+
+            const message = input.value.trim();
+
+            if (!message) {
+
+                return;
+
+            }
+
+
+            // USER MESSAGE
+
+            addUserMessage(message);
+
+
+            // Clear input
+
+            input.value = "";
+
+
+            // Show loading
+
+            loading.style.display = "flex";
+
+
+            try {
+
+                const formData = new FormData();
+
+                formData.append("msg", message);
+
+
+                const response = await fetch("/get", {
+
+                    method: "POST",
+
+                    body: formData
+
+                });
+
+
+                const answer = await response.text();
+
+
+                // Hide loading
+
+                loading.style.display = "none";
+
+
+                // BOT RESPONSE
+
+                addBotMessage(answer);
+
+
+            }
+
+            catch (error) {
+
+                loading.style.display = "none";
+
+
+                addBotMessage(
+                    "Sorry, something went wrong. Please try again."
+                );
+
+                console.error(error);
+
+            }
+
+        }
+
+
+        // ==========================================
+        // ADD USER MESSAGE
+        // ==========================================
+
+        function addUserMessage(message) {
+
+            const wrapper = document.createElement("div");
+
+            wrapper.className = "user-message-wrapper";
+
+
+            wrapper.innerHTML = `
+
+                <div class="message user-message">
+
+                    ${escapeHTML(message)}
+
+                </div>
+
+                <div class="user-avatar">
+                    👤
+                </div>
+
+            `;
+
+
+            chatBox.appendChild(wrapper);
+
+
+            scrollChat();
+
+        }
+
+
+        // ==========================================
+        // ADD BOT MESSAGE
+        // ==========================================
+
+        function addBotMessage(message) {
+
+            const wrapper = document.createElement("div");
+
+            wrapper.className = "welcome-message";
+
+
+            wrapper.innerHTML = `
+
+                <div class="bot-avatar">
+                    🩺
+                </div>
+
+                <div class="message bot-message">
+
+                    <strong>Medical Assistant</strong>
+
+                    <p>
+                        ${escapeHTML(message)}
+                    </p>
+
+                </div>
+
+            `;
+
+
+            chatBox.appendChild(wrapper);
+
+
+            scrollChat();
+
+        }
+
+
+        // ==========================================
+        // SCROLL CHAT
+        // ==========================================
+
+        function scrollChat() {
+
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+        }
+
+
+        // ==========================================
+        // HTML SECURITY
+        // ==========================================
+
+        function escapeHTML(text) {
+
+            const div = document.createElement("div");
+
+            div.textContent = text;
+
+            return div.innerHTML;
+
+        }
+
+    </script>
+
+</body>
+
 </html>

@@ -72,7 +72,7 @@ print("Pinecone index connected successfully!")
 retriever = docsearch.as_retriever(
     search_type="similarity",
     search_kwargs={
-        "k": 5
+        "k": 1
     }
 )
 
@@ -121,22 +121,31 @@ print(MODEL_PATH)
 
 print("\nLoading local Llama model...")
 
+# llm = Llama(
+#     model_path=MODEL_PATH,
+
+#     # Context window
+#     n_ctx=2048,
+
+#     # CPU threads
+#     n_threads=8,
+
+#     # Batch size
+#     n_batch=512,
+
+#     # Response generation
+#     verbose=False
+# )
+
 llm = Llama(
     model_path=MODEL_PATH,
-
-    # Context window
-    n_ctx=4096,
-
-    # CPU threads
-    n_threads=8,
-
-    # Batch size
-    n_batch=512,
-
-    # Response generation
+    n_ctx=1024,
+    n_batch=256,
+    n_threads=10,
+    n_threads_batch=10,
+    use_mmap=True,
     verbose=False
 )
-
 print("Local Llama model loaded successfully!")
 
 
@@ -281,7 +290,7 @@ ANSWER:
     response = llm(
         final_prompt,
 
-        max_tokens=500,
+        max_tokens=200,
 
         temperature=0.1,
 
@@ -421,3 +430,42 @@ if __name__ == "__main__":
         port=8080,
         debug=True
     )
+@app.route("/get", methods=["GET", "POST"])
+def chat():
+
+    try:
+
+        # User message
+        if request.method == "POST":
+            msg = request.form.get("msg", "").strip()
+        else:
+            msg = request.args.get("msg", "").strip()
+
+        # Empty question
+        if not msg:
+            return "Please enter your question."
+
+        print("\n" + "=" * 60)
+        print("USER QUESTION:")
+        print(msg)
+        print("=" * 60)
+
+        # Llama + Pinecone se answer
+        answer = ask_medical_question(msg)
+
+        print("\n" + "=" * 60)
+        print("FINAL ANSWER:")
+        print(answer)
+        print("=" * 60)
+
+        # VERY IMPORTANT
+        return str(answer)
+
+    except Exception as e:
+
+        print("\n" + "=" * 60)
+        print("ERROR:")
+        print(str(e))
+        print("=" * 60)
+
+        return f"Error: {str(e)}"
