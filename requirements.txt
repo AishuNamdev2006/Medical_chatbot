@@ -1,18 +1,19 @@
-sentence-transformers==2.2.2
+Flask
+python-dotenv
 
 langchain
 langchain-community
-langchain-openai
-langchain-google-genai
-
-google-generativeai
-
-flask
-pypdf
-python-dotenv
-
-pinecone[grpc]
-langchain-pinecone
-
+langchain-core
+langchain-huggingface
+langchain-pinecone==0.2.13
 langchain-experimental
--e .
+
+pinecone
+pinecone[grpc]
+
+torch
+transformers
+huggingface-hub
+sentence-transformers
+
+llama-cpp-python

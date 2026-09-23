@@ -83,7 +83,7 @@ print("Retriever created successfully!")
 # 6. FIND LOCAL GGUF MODEL
 # =========================================================
 
-MODEL_FOLDER = Path(r"D:\LLM\Models")
+MODEL_FOLDER = Path(os.getenv("MODEL_FOLDER", "/models"))
 
 if not MODEL_FOLDER.exists():
     raise FileNotFoundError(
@@ -99,9 +99,13 @@ for model in gguf_files:
     print("-", model)
 
 
+# if not gguf_files:
+#     raise FileNotFoundError(
+#         "D:\\LLM\\Models ke andar koi .gguf model nahi mila."
+#     )
 if not gguf_files:
     raise FileNotFoundError(
-        "D:\\LLM\\Models ke andar koi .gguf model nahi mila."
+        f"{MODEL_FOLDER} ke andar koi .gguf model nahi mila."
     )
 
 
@@ -336,8 +340,7 @@ def index():
 # 12. CHAT ROUTE
 # =========================================================
 
-@app.route("/get", methods=["GET", "POST"])
-def chat():
+
 
     try:
 
